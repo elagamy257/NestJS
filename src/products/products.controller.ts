@@ -10,6 +10,7 @@ import {
   Req,
   Res,
   Headers,
+  ParseIntPipe,
 } from '@nestjs/common';
 import type { Request, Response } from 'express';
 import { CreateProductDto } from './dtos/create-products.dto.js';
@@ -46,7 +47,7 @@ export class ProductsControllers {
   //     maxAge: 120,
   //   });
   // }
-  
+
   // POST:  ~/api/products
   @Post()
   CreateNewProduct(@Body() body: CreateProductDto) {
@@ -67,14 +68,14 @@ export class ProductsControllers {
 
   // GET:  ~/api/products/:id
   @Get(':id')
-  getSingleProducts(@Param('id') id: string) {
+  getSingleProducts(@Param('id', ParseIntPipe) id: string) {
     const product = this.products.find((p) => p.id === parseInt(id));
     if (!product) throw new NotFoundException('Product not found');
     return product;
   }
   // PUT:  ~/api/products/:id
   @Put(':id')
-  UpdateProduct(@Param('id') id: string, @Body() body: UpdateProductDto) {
+  UpdateProduct(@Param('id', ParseIntPipe) id: string, @Body() body: UpdateProductDto) {
     const product = this.products.find((p) => p.id === parseInt(id));
     if (!product) throw new NotFoundException('Product not found');
     return { message: 'product updated successfully' };
@@ -82,7 +83,7 @@ export class ProductsControllers {
 
   // Delete:  ~/api/products/:id
   @Delete(':id')
-  DeleteProduct(@Param('id') id: string) {
+  DeleteProduct(@Param('id', ParseIntPipe) id: string) {
     const product = this.products.find((p) => p.id === parseInt(id));
     if (!product) throw new NotFoundException('Product not found');
     return { message: 'product deleted' };
