@@ -1,16 +1,17 @@
 import { Controller, Get } from "@nestjs/common";
+import { UsersService } from "./users.service.js";
+import { ProductsService } from "../products/products.service.js";
 
 @Controller("api/users")
-export class UsersControllers{
+export class UsersControllers {
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly productsService: ProductsService
+  ) { }
 
   // GET:  ~/api/users
   @Get()
-  getAllUsers(){
-    return [
-      { id:1, email: 'aya@gmail.com'},
-      { id:2, email: 'aya@gmail.com'},
-      { id:3, email: 'aya@gmail.com'},
-      { id:4, email: 'aya@gmail.com'},
-    ]
+  getAllUsers() {
+    return this.usersService.getAll();
   }
 }

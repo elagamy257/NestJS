@@ -1,10 +1,15 @@
 type ProductType = { id: number; title: string; price: number };
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateProductDto } from './dtos/create-products.dto.js';
 import { UpdateProductDto } from './dtos/update-products.dto.js';
+import { UsersService } from '../users/users.service.js';
 
 @Injectable()
 export class ProductsService {
+  constructor(
+    @Inject( forwardRef(() =>UsersService))
+    private readonly usersService: UsersService
+  ) { }
   private products: ProductType[] = [
     { id: 1, title: 'book', price: 10 },
     { id: 2, title: 'book', price: 100 },
@@ -30,7 +35,9 @@ export class ProductsService {
   * get All Products
   */
   getAll() {
-    return this.products;
+    const products = this.products;
+    const users = this.usersService.getAll();
+    return { products, users };
   }
 
   /**
