@@ -10,7 +10,7 @@ Content-Type: application/json
 
 {
   "title": "me",
-  "price": 20
+  "price": 20,
 }
 
 ### Update product
@@ -18,7 +18,7 @@ Put http://localhost:5000/api/products/1
 Content-Type: application/json
 
 {
-  "title": "aae",
+  "title": "swdw",
   "price": 20
 }
 

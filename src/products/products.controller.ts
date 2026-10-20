@@ -75,7 +75,8 @@ export class ProductsControllers {
   }
   // PUT:  ~/api/products/:id
   @Put(':id')
-  UpdateProduct(@Param('id', ParseIntPipe) id: string, @Body() body: UpdateProductDto) {
+  UpdateProduct(@Param('id', ParseIntPipe) id: string,
+   @Body() body: UpdateProductDto) {
     const product = this.products.find((p) => p.id === parseInt(id));
     if (!product) throw new NotFoundException('Product not found');
     return { message: 'product updated successfully' };
