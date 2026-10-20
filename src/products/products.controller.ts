@@ -10,13 +10,11 @@ import {
 } from '@nestjs/common';
 import { CreateProductDto } from './dtos/create-products.dto.js';
 import { UpdateProductDto } from './dtos/update-products.dto.js';
-import { ProductService } from './products.service.js';
+import { ProductsService } from './products.service.js';
 
 @Controller('api/products')
 export class ProductsControllers {
-
-  //bad practice 
-  private productsService: ProductService = new ProductService();
+  constructor(private readonly productsService: ProductsService) { }
 
   // POST:  ~/api/products
   @Post()
