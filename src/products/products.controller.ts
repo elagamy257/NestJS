@@ -7,15 +7,11 @@ import {
   Param,
   NotFoundException,
   Put,
-  Req,
-  Res,
-  Headers,
   ParseIntPipe,
 } from '@nestjs/common';
-import type { Request, Response } from 'express';
 import { CreateProductDto } from './dtos/create-products.dto.js';
 import { UpdateProductDto } from './dtos/update-products.dto.js';
-import { from } from 'rxjs';
+
 type ProductType = { id: number; title: string; price: number };
 @Controller('api/products')
 export class ProductsControllers {
@@ -68,25 +64,33 @@ export class ProductsControllers {
 
   // GET:  ~/api/products/:id
   @Get(':id')
-  getSingleProducts(@Param('id', ParseIntPipe) id: string) {
-    const product = this.products.find((p) => p.id === parseInt(id));
+  getSingleProducts(@Param('id', ParseIntPipe) id: number) {
+    const product = this.products.find((p) => p.id === id);
     if (!product) throw new NotFoundException('Product not found');
     return product;
   }
   // PUT:  ~/api/products/:id
   @Put(':id')
-  UpdateProduct(@Param('id', ParseIntPipe) id: string,
-   @Body() body: UpdateProductDto) {
-    const product = this.products.find((p) => p.id === parseInt(id));
+  UpdateProduct(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: UpdateProductDto,
+  ) {
+    const product = this.products.find((p) => p.id === id);
     if (!product) throw new NotFoundException('Product not found');
+
+    if (body.title !== undefined) product.title = body.title;
+    if (body.price !== undefined) product.price = body.price;
+
     return { message: 'product updated successfully' };
   }
 
   // Delete:  ~/api/products/:id
   @Delete(':id')
-  DeleteProduct(@Param('id', ParseIntPipe) id: string) {
-    const product = this.products.find((p) => p.id === parseInt(id));
+  DeleteProduct(@Param('id', ParseIntPipe) id: number) {
+    const product = this.products.find((p) => p.id === id);
     if (!product) throw new NotFoundException('Product not found');
+
+    this.products = this.products.filter((p) => p.id !== id);
     return { message: 'product deleted' };
   }
 }

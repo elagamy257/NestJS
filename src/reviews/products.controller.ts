@@ -1,11 +1,10 @@
- import { Controller, Get } from "@nestjs/common";
-import { title } from "process";
+import { Controller, Get } from "@nestjs/common";
 
-@Controller ({})
+@Controller("api/reviews")
 export class ReviewsControllers{
 
   // GET:  ~/api/reviews
-  @Get("/api/reviews")
+  @Get()
   getAllReviews(){
     return [
       { id:1, comment: 'good', rating: 10},

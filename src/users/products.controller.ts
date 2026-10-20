@@ -1,11 +1,10 @@
- import { Controller, Get } from "@nestjs/common";
-import { title } from "process";
+import { Controller, Get } from "@nestjs/common";
 
-@Controller ({})
+@Controller("api/users")
 export class UsersControllers{
 
   // GET:  ~/api/users
-  @Get("/api/users")
+  @Get()
   getAllUsers(){
     return [
       { id:1, email: 'aya@gmail.com'},
