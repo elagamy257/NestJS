@@ -7,18 +7,15 @@ import {
   Param,
   Put,
   ParseIntPipe,
-  forwardRef,
 } from '@nestjs/common';
 import { CreateProductDto } from './dtos/create-products.dto.js';
 import { UpdateProductDto } from './dtos/update-products.dto.js';
 import { ProductsService } from './products.service.js';
-import { inject } from 'vitest';
-import { UsersService } from '../users/users.service.js';
 
 @Controller('api/products')
 export class ProductsControllers {
   constructor(
-    private readonly productsService: ProductsService
+    private readonly productsService: ProductsService,
   ) { }
 
   // POST:  ~/api/products

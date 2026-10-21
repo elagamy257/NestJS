@@ -15,6 +15,7 @@ export class UpdateProductDto {
   title?: string;
 
   @IsString()
+  @Length(5, 200)
   @IsOptional()
   description?: string;
 

@@ -7,6 +7,7 @@ export class CreateProductDto {
   title: string;
 
   @IsString()
+  @Length(5, 200)
   description: string;
 
   @IsNumber()
