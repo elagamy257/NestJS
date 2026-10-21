@@ -6,6 +6,9 @@ export class CreateProductDto {
   @Length(3, 150)
   title: string;
 
+  @IsString()
+  description: string;
+
   @IsNumber()
   @IsNotEmpty()
   @Min(0, { message: 'price should be positive num' })
