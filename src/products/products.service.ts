@@ -1,7 +1,6 @@
-import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateProductDto } from './dtos/create-products.dto.js';
 import { UpdateProductDto } from './dtos/update-products.dto.js';
-import { UsersService } from '../users/users.service.js';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from './product.entity.js';
 import { Repository } from 'typeorm';
