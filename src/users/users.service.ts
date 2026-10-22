@@ -13,7 +13,7 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
-    private readonly jwtService: JwtService
+    private readonly jwtService: JwtService,
   ) { }
 
   /**
@@ -59,6 +59,17 @@ export class UsersService {
 
     return { accessToken };
 
+  }
+
+  /**
+   * Get Current user (logged in user)
+   * @param id id for login user
+   * @returns user from db
+   */
+  async getCurrentUser(id: number){
+    const user = await this.usersRepository.findOne({ where: { id} });
+    if (!user) throw new BadRequestException("User not found");
+    return user;
   }
 
   /**
