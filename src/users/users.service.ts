@@ -5,12 +5,15 @@ import { Repository } from "typeorm";
 import { RegisterDto } from "./dtos/register.dto.js";
 import * as bcrypt from "bcryptjs";
 import { LoginDto } from "./dtos/login.dto.js";
+import { JwtService } from "@nestjs/jwt";
+import { AccessTokenType, JWTPayloadType } from "../utils/type.js";
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private readonly usersRepository: Repository<User>
+    private readonly usersRepository: Repository<User>,
+    private readonly jwtService: JwtService
   ) { }
 
   /**
@@ -18,7 +21,7 @@ export class UsersService {
    * @param registerDto data for creating new user
    * @returns JWT (access token)
    */
-  async register(registerDto: RegisterDto) {
+  async register(registerDto: RegisterDto): Promise<AccessTokenType> {
     const { email, password, username } = registerDto;
 
     const userFromDto = await this.usersRepository.findOne({ where: { email } });
@@ -27,32 +30,43 @@ export class UsersService {
     const salt = await bcrypt.genSalt(10);
     const hashedPass = await bcrypt.hash(password, salt);
 
-    const newUser = this.usersRepository.create({
+    let newUser = this.usersRepository.create({
       email,
       username,
       password: hashedPass
     });
 
-    await this.usersRepository.save(newUser);
-
-    return newUser;
+    newUser = await this.usersRepository.save(newUser);
+    const accessToken = await this.generateJWT({ id: newUser.id, userType: newUser.userType });
+    return { accessToken };
   }
 
-    /**
+  /**
    * login user
    * @param registerDto data for login user
    * @returns JWT (access token)
    */
-  async login(loginDto: LoginDto){
+  async login(loginDto: LoginDto): Promise<AccessTokenType> {
     const { email, password } = loginDto;
 
     const user = await this.usersRepository.findOne({ where: { email } });
     if (!user) throw new BadRequestException("invalid email or password");
 
-    const isPassmatch= await bcrypt.compare(password, user.password);
+    const isPassmatch = await bcrypt.compare(password, user.password);
     if (!isPassmatch) throw new BadRequestException("invalid email or password");
 
-    return user;
+    const accessToken = await this.generateJWT({ id: user.id, userType: user.userType });
 
+    return { accessToken };
+
+  }
+
+  /**
+  * generate json web token
+  * @param payload jwt payload
+  * @returns roken
+  */
+  private generateJWT(payload: JWTPayloadType): Promise<string> {
+    return this.jwtService.signAsync(payload);
   }
 }
