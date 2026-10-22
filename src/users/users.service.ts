@@ -66,10 +66,19 @@ export class UsersService {
    * @param id id for login user
    * @returns user from db
    */
-  async getCurrentUser(id: number){
+  async getCurrentUser(id: number): Promise <User>{
     const user = await this.usersRepository.findOne({ where: { id} });
     if (!user) throw new BadRequestException("User not found");
     return user;
+  }
+
+  /**
+   * Get all users from db
+   * @param 
+   * @returns collections of users
+   */
+  getAll(): Promise <User[]>{
+       return this.usersRepository.find();
   }
 
   /**
