@@ -10,7 +10,6 @@ import { UserType } from "../utils/enums.js";
 import { AuthRolesGuard } from "./guards/auth.roles.guard.js";
 import { UpdateUserDto } from "./dtos/update-user.dto.js";
 
-
 @Controller("api/users")
 export class UsersControllers {
   constructor(
@@ -30,7 +29,7 @@ export class UsersControllers {
     return this.usersService.login(body);
   }
 
-  // Get:  ~/api/users/auth/me
+  // Get:  ~/api/users/auth/current-user
   @Get("current-user")
   @UseGuards(AuthGuard)
   getCurrentUser(@CurrentUser() payload: type.JWTPayloadType) {

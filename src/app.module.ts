@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { ClassSerializerInterceptor, Module } from '@nestjs/common';
 import { ProductsModules } from './products/products.module.js';
 import { ReviewsModules } from './reviews/reviews.module.js';
 import { UsersModules } from './users/users.module.js';
@@ -7,6 +7,7 @@ import { Product } from './products/product.entity.js';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { User } from './users/user.entity.js';
 import { Review } from './reviews/revew.entity.js';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 @Module({
   imports: [
     ProductsModules,
@@ -22,7 +23,7 @@ import { Review } from './reviews/revew.entity.js';
           password: config.get<string>("DB_PASSWORD"),
           port: config.get<number>("DB_PORT"),
           host: 'localhost',
-          synchronize: process.env.NODE_ENV !==  'production', 
+          synchronize: process.env.NODE_ENV !== 'production',
           entities: [Product, User, Review]
         }
       }
@@ -33,9 +34,14 @@ import { Review } from './reviews/revew.entity.js';
       envFilePath: `.env.${process.env.NODE_ENV}`
     })
   ],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ClassSerializerInterceptor
+    }
+  ],
 
   // exports: [],
-  // providers: [],
   // controllers: [],
 })
 export class AppModule { }
