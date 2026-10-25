@@ -1,2 +1,26 @@
+### Register
+POST  http://localhost:5000/api/users/auth/register
+
+Content-Type: : application/json
+
+{
+  "email": "mesdd@gmail.com",
+  "password": "12345fef6"
+}
+
+### Login
+POST  http://localhost:5000/api/users/auth/login
+
+Content-Type: : application/json
+
+{
+    "email": "aya@gmail.com",
+    "password": "123456"
+}
+
 ### Get all users
 GET http://localhost:5000/api/users
+
+### Get Current User
+GET http://localhost:5000/api/users/current-user
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlclR5cGUiOiJhZG1pbiIsImlhdCI6MTc5MjkzODAyNywiZXhwIjoxNzkzMDI0NDI3fQ.CwCU2BcvXO6wMpf-9o6a5V7qeub-0FvXa5rwI3BSbtA
