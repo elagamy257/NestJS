@@ -36,7 +36,7 @@ export class ProductsService {
   * get All Products
   * @returns collections of products
   */
-  getAll(title?: string, minPrice?: string, maxPrice?: string,) {
+  getAll(title?: string, minPrice?: string, maxPrice?: string) {
     const filters = {
       ...(title ? { title: Like(`%${title?.toLowerCase}%`) } : {}),
       ...(minPrice && maxPrice ? { price: Between(parseInt(minPrice), parseInt(maxPrice)) } : {}),
@@ -61,7 +61,7 @@ export class ProductsService {
  * @param dto data for the updating product
  * @returns updated product 
  */
-  async Update(id: number, dto: UpdateProductDto,) {
+  async Update(id: number, dto: UpdateProductDto) {
     const product = await this.getOneBy(id);
 
 

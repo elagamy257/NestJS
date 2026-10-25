@@ -8,7 +8,7 @@ import {
   ManyToOne,
 } from "typeorm";
 import { CURRENT_TIMESTAMP } from '../utils/constans.js';
-import { Review } from "../reviews/revew.entity.js";
+import { Review } from "../reviews/review.entity.js";
 import { User } from "../users/user.entity.js";
 
 @Entity({ name: 'products' })
@@ -31,9 +31,9 @@ export class Product {
   @UpdateDateColumn({ type: 'timestamp', default: () => CURRENT_TIMESTAMP, onUpdate: CURRENT_TIMESTAMP })
   updatedAt: Date;
 
-  @OneToMany(() => Review, (review) => review.product, { eager: true})
+  @OneToMany(() => Review, (review) => review.product, { eager: true })
   reviews: Review[];
 
-  @ManyToOne(() => User, (user) => user.product, { eager: true})
+  @ManyToOne(() => User, (user) => user.product, { eager: true })
   user: User;
 }

@@ -9,7 +9,7 @@ import {
 } from "typeorm";
 import { CURRENT_TIMESTAMP } from '../utils/constans.js';
 import { Product } from "../products/product.entity.js";
-import { Review } from "../reviews/revew.entity.js";
+import { Review } from "../reviews/review.entity.js";
 import { UserType } from "../utils/enums.js";
 import { Exclude } from "class-transformer";
 

@@ -5,7 +5,7 @@ import {
   UpdateDateColumn,
   PrimaryGeneratedColumn,
   ManyToOne,
-  type Relation
+  type Relation,
 } from "typeorm";
 import { CURRENT_TIMESTAMP } from '../utils/constans.js';
 import { Product } from "../products/product.entity.js";
@@ -29,8 +29,8 @@ export class Review {
   updatedAt: Date;
 
   @ManyToOne(() => Product, (product) => product.reviews)
-  product: Relation<Product>;
+product: Relation<Product>;
 
-  @ManyToOne(() => User, (user) => user.review)
-  user: Relation<User>;
+@ManyToOne(() => User, (user) => user.review, { eager: true })
+user: Relation<User>;
 }

@@ -36,11 +36,11 @@ export class ProductsControllers {
   // GET:  ~/api/products
   @Get()
   getAllProducts(
-    @Query('title') title:string,
-    @Query('minPrice') minPrice:string,
-    @Query('maxPrice') maxPrice:string
-   ) {
-    return this.productsService.getAll(title,minPrice,maxPrice);
+    @Query('title') title: string,
+    @Query('minPrice') minPrice: string,
+    @Query('maxPrice') maxPrice: string
+  ) {
+    return this.productsService.getAll(title, minPrice, maxPrice);
   }
 
   // GET:  ~/api/products/:id
@@ -52,7 +52,7 @@ export class ProductsControllers {
   @Put(':id')
   @UseGuards(AuthRolesGuard)
   @Roles(UserType.ADMIN)
-  UpdateProduct(@Param('id', ParseIntPipe) id: number, @Body() body: UpdateProductDto,) {
+  UpdateProduct(@Param('id', ParseIntPipe) id: number, @Body() body: UpdateProductDto) {
     return this.productsService.Update(id, body);
   }
 

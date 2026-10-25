@@ -6,7 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Product } from './products/product.entity.js';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { User } from './users/user.entity.js';
-import { Review } from './reviews/revew.entity.js';
+import { Review } from './reviews/review.entity.js';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 @Module({
   imports: [
