@@ -45,10 +45,16 @@ export class ReviewsService {
 
   /**
   * get All Reviews
+  * @param pageNumber num of the current page
+  * @param reviewPerPage data per page
   * @returns collections of reviews
   */
-  getAll() {
-    return this.reviewsRepository.find({ order: { createdAt: "ASC" } });
+  getAll(pageNumber: number, reviewPerPage: number) {
+    return this.reviewsRepository.find({
+      skip: reviewPerPage * ( pageNumber -1),
+      take: 3,
+      order: { createdAt: "ASC" } });
+
   }
 
 

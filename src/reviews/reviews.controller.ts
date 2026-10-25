@@ -16,8 +16,11 @@ export class ReviewsControllers {
   @Get()
   @UseGuards(AuthRolesGuard)
   @Roles(UserType.ADMIN)
-  getAllReviews() {
-    return this.reviewsService.getAll();
+  getAllReviews(
+    @Query('pageNumber') pageNumber: number,
+    @Query('reviewPerPage') reviewPerPage: number,
+  ) {
+    return this.reviewsService.getAll(pageNumber, reviewPerPage);
   }
 
   // Post:  ~/api/reviews/:productId
