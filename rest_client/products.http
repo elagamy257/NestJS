@@ -1,8 +1,8 @@
 ### Get all products
-GET http://localhost:5000/api/products
+GET http://localhost:5000/api/products?minPrice=600&&maxPrice=1000
 
 ### Get single product
-GET http://localhost:5000/api/products/5
+GET http://localhost:5000/api/products/8
 
 
 ### Create new product
@@ -11,9 +11,9 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlclR5cGUiOiJhZG1pbiIsImlhdCI6MTc5MjkzODAyNywiZXhwIjoxNzkzMDI0NDI3fQ.CwCU2BcvXO6wMpf-9o6a5V7qeub-0FvXa5rwI3BSbtA
 
 {
-  "title": "book",
-  "description": "about book ",
-  "price": 500
+  "title": "phone",
+  "description": "about book6 ",
+  "price": 1000
 }
 
 ### Update product
