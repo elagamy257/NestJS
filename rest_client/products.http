@@ -2,27 +2,32 @@
 GET http://localhost:5000/api/products
 
 ### Get single product
-GET http://localhost:5000/api/products/1
+GET http://localhost:5000/api/products/5
 
 
 ### Create new product
 POST http://localhost:5000/api/products
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlclR5cGUiOiJhZG1pbiIsImlhdCI6MTc5MjkzODAyNywiZXhwIjoxNzkzMDI0NDI3fQ.CwCU2BcvXO6wMpf-9o6a5V7qeub-0FvXa5rwI3BSbtA
 
 {
-  "title": "book2",
-  "description": "about book 2",
-  "price": 50
+  "title": "book",
+  "description": "about book ",
+  "price": 500
 }
 
 ### Update product
-PUT http://localhost:5000/api/products/1
+PUT http://localhost:5000/api/products/3
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywidXNlclR5cGUiOiJub3JtYWwiLCJpYXQiOjE3OTI5NDEyNTgsImV4cCI6MTc5MzAyNzY1OH0.eu0VmfyzlIKI9tfAuGBpMAl3RQGeBqHcCTUWzHl1V-s
+
 
 {
-  "title": "update 1",
+  "title": "update 3",
   "price": 30
 }
 
 ### Delete product
-DELETE http://localhost:5000/api/products/10
+DELETE http://localhost:5000/api/products/5
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlclR5cGUiOiJhZG1pbiIsImlhdCI6MTc5MjkzODAyNywiZXhwIjoxNzkzMDI0NDI3fQ.CwCU2BcvXO6wMpf-9o6a5V7qeub-0FvXa5rwI3BSbtA
+

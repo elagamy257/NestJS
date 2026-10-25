@@ -6,7 +6,6 @@ import {
   PrimaryGeneratedColumn,
   OneToMany,
   ManyToOne,
-  type Relation
 } from "typeorm";
 import { CURRENT_TIMESTAMP } from '../utils/constans.js';
 import { Review } from "../reviews/revew.entity.js";
@@ -32,9 +31,9 @@ export class Product {
   @UpdateDateColumn({ type: 'timestamp', default: () => CURRENT_TIMESTAMP, onUpdate: CURRENT_TIMESTAMP })
   updatedAt: Date;
 
-  @OneToMany(() => Review, (review) => review.product)
-  reviews: Relation<Review[]>;
+  @OneToMany(() => Review, (review) => review.product, { eager: true})
+  reviews: Review[];
 
-  @ManyToOne(() => User, (user) => user.product)
-  user: Relation<User>;
+  @ManyToOne(() => User, (user) => user.product, { eager: true})
+  user: User;
 }

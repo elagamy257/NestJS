@@ -20,7 +20,7 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
           type: 'postgres',
           database: config.get<string>("DB_DATABASE"),
           username: config.get<string>("DB_USERNAME"),
-          password: config.get<string>("DB_PASSWORD"),
+          password: config.get<string>("DB_PASSWORD")?.toString() ?? '',
           port: config.get<number>("DB_PORT"),
           host: 'localhost',
           synchronize: process.env.NODE_ENV !== 'production',
@@ -31,7 +31,7 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
     }),
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: `.env.${process.env.NODE_ENV}`
+      envFilePath: `.env.${process.env.NODE_ENV || 'development'}`
     })
   ],
   providers: [
