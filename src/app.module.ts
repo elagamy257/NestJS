@@ -9,12 +9,14 @@ import { User } from './users/user.entity.js';
 import { Review } from './reviews/review.entity.js';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { UploadsModule } from './uploads/uploads.module.js';
+import { MailModule } from './mail/mail.module.js';
 @Module({
   imports: [
     ProductsModules,
     ReviewsModules,
     UsersModules,
     UploadsModule,
+    MailModule,
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {

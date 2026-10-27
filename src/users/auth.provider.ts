@@ -7,6 +7,7 @@ import { Repository } from "typeorm";
 import { User } from "./user.entity.js";
 import { JwtService } from "@nestjs/jwt";
 import bcrypt from "bcryptjs";
+import { MailService } from "../mail/mail.service.js";
 
 @Injectable()
 export class AuthProvider {
@@ -15,6 +16,7 @@ export class AuthProvider {
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
     private readonly jwtService: JwtService,
+    private readonly mailService: MailService,
   ) { }
 
   /**
@@ -57,6 +59,7 @@ export class AuthProvider {
 
     const accessToken = await this.generateJWT({ id: user.id, userType: user.userType });
 
+    await this.mailService.sendLogEmail(user.email);
     return { accessToken };
 
   }
