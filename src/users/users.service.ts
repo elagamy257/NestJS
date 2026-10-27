@@ -8,6 +8,8 @@ import { UserType } from "../utils/enums.js";
 import { AuthProvider } from "./auth.provider.js";
 import { RegisterDto } from "./dtos/register.dto.js";
 import { LoginDto } from "./dtos/login.dto.js";
+import { join } from "path";
+import { unlinkSync } from "fs";
 
 @Injectable()
 export class UsersService {
@@ -91,6 +93,41 @@ export class UsersService {
       return { message: 'User has been deleted' }
     }
     throw new ForbiddenException("access denied, you are not allowed");
+  }
+
+  /**
+   * set Profile Image
+   * @param userId id for logged user
+   * @param newImageProfile profile image
+   * @returns user from db
+   */
+  async setProfileImage(userId: number, newImageProfile: string) {
+    const user = await this.getCurrentUser(userId);
+    if(user.profileImage === null){
+      user.profileImage = newImageProfile;
+    } else {
+      await this.removeProfileImage(userId);
+      user.profileImage = newImageProfile;
+    }
+
+    return this.usersRepository.save(user);
+  }
+
+  /**
+   * remove Profile Image
+   * @param userId id for logged user
+   * @returns user from db
+   */
+  async removeProfileImage(userId: number) {
+    const user = await this.getCurrentUser(userId);
+    if (user.profileImage === null)
+      throw new BadRequestException("there is no profile image");
+
+    const imagePath = join(process.cwd(), `./images/users/${user.profileImage}`);
+    unlinkSync(imagePath);
+
+    user.profileImage = ''; //null
+    return this.usersRepository.save(user);
   }
 
 

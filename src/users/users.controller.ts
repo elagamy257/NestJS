@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Post, Put, UseGuards } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Post, Put, Res, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
 import { UsersService } from "./users.service.js";
 import { RegisterDto } from "./dtos/register.dto.js";
 import { LoginDto } from "./dtos/login.dto.js";
@@ -9,6 +9,8 @@ import { Roles } from "./decorators/user-role-decorator.js";
 import { UserType } from "../utils/enums.js";
 import { AuthRolesGuard } from "./guards/auth.roles.guard.js";
 import { UpdateUserDto } from "./dtos/update-user.dto.js";
+import { FileInterceptor } from "@nestjs/platform-express";
+import express from "express";
 
 @Controller("api/users")
 export class UsersControllers {
@@ -60,4 +62,30 @@ export class UsersControllers {
     return this.usersService.delete(id, payload);
   }
 
+  // POST:  ~/api/users/upload-image
+  @Post("upload-image")
+  @UseGuards(AuthGuard)
+  @UseInterceptors(FileInterceptor('user-image'))
+  uploadProfileImage(
+    @UploadedFile() file: Express.Multer.File,
+    @CurrentUser() payload: type.JWTPayloadType
+  ) {
+    if (!file) throw new BadRequestException("No file provided");
+    return this.usersService.setProfileImage(payload.id, file.fieldname);
+
+  }
+
+  // DELETE:  ~/api/users/images/remove-profile-image
+  @Delete("images/remove-profile-image")
+  @UseGuards(AuthGuard)
+  removeProfileImage(@CurrentUser() payload: type.JWTPayloadType) {
+    return this.usersService.removeProfileImage(payload.id);
+  }
+
+  // GET:  ~/api/users/images/remove-profile-image
+  @Get("images/:image")
+  @UseGuards(AuthGuard)
+  showProfileImage(@Param('image') image: string, @Res() res: express.Response) {
+    return res.sendFile(image, {root: 'images/users'});
+  }
 }
