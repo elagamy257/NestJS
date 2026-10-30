@@ -38,7 +38,7 @@ export class ProductsService {
   */
   getAll(title?: string, minPrice?: string, maxPrice?: string) {
     const filters = {
-      ...(title ? { title: Like(`%${title?.toLowerCase}%`) } : {}),
+      ...(title ? { title: Like(`%${title.toLowerCase()}%`) } : {}),
       ...(minPrice && maxPrice ? { price: Between(parseInt(minPrice), parseInt(maxPrice)) } : {}),
     }
     return this.productsRepository.find({ where: filters });

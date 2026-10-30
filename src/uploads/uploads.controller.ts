@@ -9,7 +9,7 @@ import {
   UploadedFiles,
   UseInterceptors,
 } from "@nestjs/common";
-import { FileInterceptor } from "@nestjs/platform-express";
+import { FileInterceptor, FilesInterceptor } from "@nestjs/platform-express";
 import type { Response } from "express";
 
 @Controller("api/uploads")
@@ -25,10 +25,10 @@ export class UploadsController {
 
   // POST: ~/api/uploads/multiple-files
   @Post('multiple-files')
-  @UseInterceptors(FileInterceptor('files'))
+  @UseInterceptors(FilesInterceptor('files'))
   uploadMultiFile(@UploadedFiles() files: Array<Express.Multer.File>) {
     if (!files || files.length === 0) throw new BadRequestException("No file provided");
-    return { message: "Files uploaded successfully" };
+    return { message: "Files uploaded successfully", count: files.length };
   }
 
   // GET: ~/api/uploads/:image

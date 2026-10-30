@@ -25,7 +25,7 @@ import { MailService } from './mail.service.js';
         template: {
           dir: join(process.cwd(), 'src/mail/templates'),
           adapter: new EjsAdapter({ inlineCssEnabled: true }),
-          options: { strict: true },
+          options: { strict: false },
         },
       }),
     }),

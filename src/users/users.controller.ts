@@ -71,7 +71,7 @@ export class UsersControllers {
     @CurrentUser() payload: type.JWTPayloadType
   ) {
     if (!file) throw new BadRequestException("No file provided");
-    return this.usersService.setProfileImage(payload.id, file.fieldname);
+    return this.usersService.setProfileImage(payload.id, file.filename);
 
   }
 

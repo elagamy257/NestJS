@@ -9,7 +9,7 @@ import { AuthProvider } from "./auth.provider.js";
 import { RegisterDto } from "./dtos/register.dto.js";
 import { LoginDto } from "./dtos/login.dto.js";
 import { join } from "path";
-import { unlinkSync } from "fs";
+import { existsSync, unlinkSync } from "fs";
 
 @Injectable()
 export class UsersService {
@@ -103,7 +103,7 @@ export class UsersService {
    */
   async setProfileImage(userId: number, newImageProfile: string) {
     const user = await this.getCurrentUser(userId);
-    if(user.profileImage === null){
+    if (!user.profileImage) {
       user.profileImage = newImageProfile;
     } else {
       await this.removeProfileImage(userId);
@@ -120,13 +120,15 @@ export class UsersService {
    */
   async removeProfileImage(userId: number) {
     const user = await this.getCurrentUser(userId);
-    if (user.profileImage === null)
+    if (!user.profileImage)
       throw new BadRequestException("there is no profile image");
 
     const imagePath = join(process.cwd(), `./images/users/${user.profileImage}`);
-    unlinkSync(imagePath);
+    if (existsSync(imagePath)) {
+      unlinkSync(imagePath);
+    }
 
-    user.profileImage = ''; //null
+    user.profileImage = null as any;
     return this.usersRepository.save(user);
   }
 
