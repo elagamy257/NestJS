@@ -2,7 +2,7 @@ import { BadRequestException, ForbiddenException, Injectable, NotFoundException 
 import { InjectRepository } from "@nestjs/typeorm";
 import { User } from "./user.entity.js";
 import { Repository } from "typeorm";
-import { AccessTokenType, JWTPayloadType } from "../utils/type.js";
+import { JWTPayloadType } from "../utils/type.js";
 import { UpdateUserDto } from "./dtos/update-user.dto.js";
 import { UserType } from "../utils/enums.js";
 import { AuthProvider } from "./auth.provider.js";
@@ -24,7 +24,7 @@ export class UsersService {
      * @param registerDto data for creating new user
      * @returns JWT (access token)
      */
-  async register(registerDto: RegisterDto): Promise<AccessTokenType> {
+  async register(registerDto: RegisterDto) {
     return this.authProvider.register(registerDto);
   }
 
@@ -33,7 +33,7 @@ export class UsersService {
      * @param registerDto data for login user
      * @returns JWT (access token)
      */
-  async login(loginDto: LoginDto): Promise<AccessTokenType> {
+  async login(loginDto: LoginDto) {
     return this.authProvider.login(loginDto);
   }
 
@@ -130,6 +130,26 @@ export class UsersService {
     return this.usersRepository.save(user);
   }
 
+  /**
+   * 
+   * @param userId
+   * @param verificationToken verification token from the link
+   * @returns success message
+   */
+  async verifyEmail(userId: number, verificationToken: string){
+    const user = await this.getCurrentUser(userId);
+    
+    if(user.verificationToken === null)
+      throw new NotFoundException("there is no verification token");
+    
+    if(user.verificationToken !== verificationToken)
+      throw new BadRequestException("invalid link")
 
+    user.isAccountVerified = true;
+    user.verificationToken = null;
+
+    await this.usersRepository.save(user);
+    return {message: "Your email has been verified, please log in to your account"}
+  }
 
 }

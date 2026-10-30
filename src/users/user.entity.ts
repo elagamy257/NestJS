@@ -5,13 +5,13 @@ import {
   UpdateDateColumn,
   PrimaryGeneratedColumn,
   OneToMany,
-  type Relation
-} from "typeorm";
+  type Relation,
+} from 'typeorm';
 import { CURRENT_TIMESTAMP } from '../utils/constans.js';
-import { Product } from "../products/product.entity.js";
-import { Review } from "../reviews/review.entity.js";
-import { UserType } from "../utils/enums.js";
-import { Exclude } from "class-transformer";
+import { Product } from '../products/product.entity.js';
+import { Review } from '../reviews/review.entity.js';
+import { UserType } from '../utils/enums.js';
+import { Exclude } from 'class-transformer';
 
 @Entity({ name: 'users' })
 export class User {
@@ -34,13 +34,20 @@ export class User {
   @Column({ default: false })
   isAccountVerified: boolean;
 
+  @Column({ type: 'varchar', length: 255, nullable: true, default: null })
+  verificationToken: string | null;
+
   @Column({ nullable: true, default: null })
   profileImage: string;
 
   @CreateDateColumn({ type: 'timestamp', default: () => CURRENT_TIMESTAMP })
   createdAt: Date;
 
-  @UpdateDateColumn({ type: 'timestamp', default: () => CURRENT_TIMESTAMP, onUpdate: CURRENT_TIMESTAMP })
+  @UpdateDateColumn({
+    type: 'timestamp',
+    default: () => CURRENT_TIMESTAMP,
+    onUpdate: CURRENT_TIMESTAMP,
+  })
   updatedAt: Date;
 
   @OneToMany(() => Product, (product) => product.user)

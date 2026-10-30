@@ -88,4 +88,13 @@ export class UsersControllers {
   showProfileImage(@Param('image') image: string, @Res() res: express.Response) {
     return res.sendFile(image, {root: 'images/users'});
   }
+
+  // GET:  ~/api/users/verify-email/:id/:verificationToken
+
+  @Get("verify-email/:id/:verificationToken")
+  verifyEmail(
+    @Param('id', ParseIntPipe) id: number, 
+    @Param('verificationToken') verificationToken: string) {
+    return this.usersService.verifyEmail(id,verificationToken);
+  }
 }
