@@ -18,8 +18,10 @@ import { Roles } from '../users/decorators/user-role-decorator.js';
 import { UserType } from '../utils/enums.js';
 import { CurrentUser } from '../users/decorators/current-user-decorator.js';
 import * as type from '../utils/type.js';
+import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @Controller('api/products')
+// @ApiTags("Products Endpoints")
 export class ProductsControllers {
   constructor(
     private readonly productsService: ProductsService,
@@ -35,6 +37,14 @@ export class ProductsControllers {
 
   // GET:  ~/api/products
   @Get()
+  @ApiResponse({status: 200, description: "products featch successfly"})
+  @ApiOperation({ summary: "Get a ccollection of products "})
+  @ApiQuery({
+    name: 'title',
+    required: false,
+    type: "string",
+    description: "searsh based on product title",
+  })
   getAllProducts(
     @Query('title') title: string,
     @Query('minPrice') minPrice: string,
