@@ -133,7 +133,7 @@ export class UsersService {
   }
 
   /**
-   * 
+   * verify Email
    * @param userId
    * @param verificationToken verification token from the link
    * @returns success message

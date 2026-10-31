@@ -33,14 +33,12 @@ export class MailService {
    */
   public async sendVerifyEmailTemplete(email: string, link: string) {
     try {
-      const today = new Date();
-      today.toLocaleDateString();
       await this.mailerService.sendMail({
         to: email,
         from: '<no-reply@my-nestjs-app.com>',
         subject: 'verify your account',
         template: 'verify-email',
-        context: { link, today },
+        context: { link },
       });
     } catch (error) {
       console.log(error);

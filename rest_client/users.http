@@ -4,8 +4,8 @@ POST  http://localhost:5000/api/users/auth/register
 Content-Type: : application/json
 
 {
-  "email": "mesdd@gmail.com",
-  "password": "12345fef6"
+  "email": "aaa@gmail.com",
+  "password": "123456"
 }
 
 ### Login
