@@ -11,6 +11,8 @@ import { AuthRolesGuard } from "./guards/auth.roles.guard.js";
 import { UpdateUserDto } from "./dtos/update-user.dto.js";
 import { FileInterceptor } from "@nestjs/platform-express";
 import express from "express";
+import { ForgetPasswordDto } from "./dtos/forget-password.dto.js";
+import { ResetPassDto } from "./dtos/reset-password.dto.js";
 
 @Controller("api/users")
 export class UsersControllers {
@@ -86,15 +88,37 @@ export class UsersControllers {
   @Get("images/:image")
   @UseGuards(AuthGuard)
   showProfileImage(@Param('image') image: string, @Res() res: express.Response) {
-    return res.sendFile(image, {root: 'images/users'});
+    return res.sendFile(image, { root: 'images/users' });
   }
 
   // GET:  ~/api/users/verify-email/:id/:verificationToken
 
   @Get("verify-email/:id/:verificationToken")
   verifyEmail(
-    @Param('id', ParseIntPipe) id: number, 
+    @Param('id', ParseIntPipe) id: number,
     @Param('verificationToken') verificationToken: string) {
-    return this.usersService.verifyEmail(id,verificationToken);
+    return this.usersService.verifyEmail(id, verificationToken);
+  }
+
+  // POST:  ~/api/users/forget-password
+  @Post("forget-password")
+  @HttpCode(HttpStatus.OK)
+  forgetPassword(@Body() body: ForgetPasswordDto) {
+    return this.usersService.sendResetPassword(body.email);
+  }
+
+  // GET:  ~/api/users/reset-password/:id/:resetPasswordToken
+  @Get("reset-password/:id/:resetPasswordToken")
+  getResrtPassword(
+    @Param("id", ParseIntPipe) id: number,
+    @Param("resetPasswordToken") resetPasswordToken: string
+  ) {
+    return this.usersService.getResetPassword(id, resetPasswordToken);
+  }
+
+  // POST:  ~/api/users/reset-password
+  @Post("reset-password")
+  resrtPassword(@Body() body: ResetPassDto) {
+    return this.usersService.resetPassword(body);
   }
 }

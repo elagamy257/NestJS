@@ -45,4 +45,24 @@ export class MailService {
       throw new RequestTimeoutException();
     }
   }
+
+  /**
+   * Sending reset password template
+   * @param email email of the registered user
+   * @param resetPasswordLink link with id of the user and reset pass token
+   */
+  public async sendResetPassTemplete(email: string, resetPasswordLink: string) {
+    try {
+      await this.mailerService.sendMail({
+        to: email,
+        from: '<no-reply@my-nestjs-app.com>',
+        subject: 'reset password',
+        template: 'reset-password',
+        context: { resetPasswordLink },
+      });
+    } catch (error) {
+      console.log(error);
+      throw new RequestTimeoutException();
+    }
+  }
 }

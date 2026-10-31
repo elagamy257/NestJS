@@ -34,6 +34,9 @@ export class User {
   @Column({ default: false })
   isAccountVerified: boolean;
 
+  @Column({ type: 'varchar', nullable: true })
+  resetPasswordToken: string | null;
+
   @Column({ type: 'varchar', length: 255, nullable: true, default: null })
   verificationToken: string | null;
 

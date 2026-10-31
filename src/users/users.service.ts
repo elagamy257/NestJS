@@ -10,6 +10,7 @@ import { RegisterDto } from "./dtos/register.dto.js";
 import { LoginDto } from "./dtos/login.dto.js";
 import { join } from "path";
 import { existsSync, unlinkSync } from "fs";
+import { ResetPassDto } from "./dtos/reset-password.dto.js";
 
 @Injectable()
 export class UsersService {
@@ -138,20 +139,49 @@ export class UsersService {
    * @param verificationToken verification token from the link
    * @returns success message
    */
-  async verifyEmail(userId: number, verificationToken: string){
+  async verifyEmail(userId: number, verificationToken: string) {
     const user = await this.getCurrentUser(userId);
-    
-    if(user.verificationToken === null)
+
+    if (user.verificationToken === null)
       throw new NotFoundException("there is no verification token");
-    
-    if(user.verificationToken !== verificationToken)
+
+    if (user.verificationToken !== verificationToken)
       throw new BadRequestException("invalid link")
 
     user.isAccountVerified = true;
     user.verificationToken = null;
 
     await this.usersRepository.save(user);
-    return {message: "Your email has been verified, please log in to your account"}
+    return { message: "Your email has been verified, please log in to your account" }
   }
+
+  /**
+   * sending Reset Password template
+   * @param email email of the user
+   * @returns success message
+   */
+  sendResetPassword(email: string) {
+    return this.authProvider.sendResetPasswordLink(email);
+  }
+
+  /**
+   * get Reset Password link
+   * @param userId user id from the link
+   * @param resetPasswordToken reset pass token from the link
+   * @returns success message
+   */
+  getResetPassword(userId: number, resetPasswordToken: string) {
+    return this.authProvider.getResetPasswordLink(userId, resetPasswordToken);
+  }
+
+  /**
+   * reset the password
+   * @param dto data for reset the password
+   * @returns success message
+   */
+  resetPassword(dto: ResetPassDto) {
+    return this.authProvider.resetPassword(dto);
+  }
+
 
 }
