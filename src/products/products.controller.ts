@@ -18,7 +18,7 @@ import { Roles } from '../users/decorators/user-role-decorator.js';
 import { UserType } from '../utils/enums.js';
 import { CurrentUser } from '../users/decorators/current-user-decorator.js';
 import * as type from '../utils/type.js';
-import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiResponse, ApiSecurity, ApiTags } from '@nestjs/swagger';
 
 @Controller('api/products')
 // @ApiTags("Products Endpoints")
@@ -31,6 +31,7 @@ export class ProductsControllers {
   @Post()
   @UseGuards(AuthRolesGuard)
   @Roles(UserType.ADMIN)
+  @ApiSecurity('bearer')//for token
   CreateNewProduct(@Body() body: CreateProductDto, @CurrentUser() payload: type.JWTPayloadType) {
     return this.productsService.CreateProduct(body, payload.id);
   }

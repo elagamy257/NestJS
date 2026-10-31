@@ -19,6 +19,8 @@ async function bootstrap() {
   .addServer("http://localhost:5000")
   .setTermsOfService("http://localhost:5000/terms")
   .setVersion("1.0")
+  .addSecurity('bearer', {type: 'http', scheme: 'bearer'})
+  .addBearerAuth()
   .build();
   const documentation = SwaggerModule.createDocument(app, swagger);
   // http://localhost:5000/swagger
