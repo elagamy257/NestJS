@@ -61,7 +61,7 @@ export class ProductsService {
  * @param dto data for the updating product
  * @returns updated product 
  */
-  async Update(id: number, dto: UpdateProductDto) {
+  async update(id: number, dto: UpdateProductDto) {
     const product = await this.getOneBy(id);
 
 
@@ -77,7 +77,7 @@ export class ProductsService {
   * @param id for the product
   * @returns successs message 
   */
-  async Delete(id: number) {
+  async delete(id: number) {
     const product = await this.getOneBy(id);
     await this.productsRepository.remove(product);
     return { message: 'product deleted' };
