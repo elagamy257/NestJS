@@ -18,7 +18,8 @@ import { Roles } from '../users/decorators/user-role-decorator.js';
 import { UserType } from '../utils/enums.js';
 import { CurrentUser } from '../users/decorators/current-user-decorator.js';
 import * as type from '../utils/type.js';
-import { ApiOperation, ApiQuery, ApiResponse, ApiSecurity, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiResponse, ApiSecurity } from '@nestjs/swagger';
+import { SkipThrottle, Throttle } from '@nestjs/throttler'
 
 @Controller('api/products')
 // @ApiTags("Products Endpoints")
@@ -38,6 +39,7 @@ export class ProductsControllers {
 
   // GET:  ~/api/products
   @Get()
+  @SkipThrottle()
   @ApiResponse({status: 200, description: "products featch successfly"})
   @ApiOperation({ summary: "Get a ccollection of products "})
   @ApiQuery({
@@ -56,6 +58,7 @@ export class ProductsControllers {
 
   // GET:  ~/api/products/:id
   @Get(':id')
+  @Throttle({default: {ttl: 10000, limit: 5}})
   getSingleProducts(@Param('id', ParseIntPipe) id: number) {
     return this.productsService.getOneBy(id);
   }
