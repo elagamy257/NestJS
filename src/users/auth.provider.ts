@@ -74,8 +74,8 @@ export class AuthProvider {
 
       if (!verificationToken) {
         user.verificationToken = randomBytes(32).toString('hex');
-        const result = await this.usersRepository.save(user);
-        verificationToken = result.verificationToken ?? '';
+        const savedUser = await this.usersRepository.save(user);
+        verificationToken = savedUser.verificationToken ?? '';
       }
 
       const link = this.generateLink(user.id, verificationToken);
@@ -101,7 +101,7 @@ export class AuthProvider {
     if (!user) throw new BadRequestException('invalid email or password');
 
     user.resetPasswordToken = randomBytes(32).toString('hex');
-    const result = await this.usersRepository.save(user);
+    await this.usersRepository.save(user);
 
     const resetPasswordLink = `${this.config.get<string>("CLIENT_DOMAIN")}/reset-password/${user.id}/${user.resetPasswordToken}`
     await this.mailService.sendResetPassTemplete(email, resetPasswordLink);
