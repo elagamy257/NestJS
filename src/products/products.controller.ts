@@ -40,8 +40,8 @@ export class ProductsControllers {
   // GET:  ~/api/products
   @Get()
   @SkipThrottle()
-  @ApiResponse({status: 200, description: "products featch successfly"})
-  @ApiOperation({ summary: "Get a ccollection of products "})
+  @ApiResponse({ status: 200, description: "products featch successfly" })
+  @ApiOperation({ summary: "Get a ccollection of products " })
   @ApiQuery({
     name: 'title',
     required: false,
@@ -49,16 +49,16 @@ export class ProductsControllers {
     description: "searsh based on product title",
   })
   getAllProducts(
-    @Query('title') title: string,
-    @Query('minPrice') minPrice: string,
-    @Query('maxPrice') maxPrice: string
+    @Query('title') title: string | undefined,
+    @Query('minPrice') minPrice: string | undefined,
+    @Query('maxPrice') maxPrice: string | undefined,
   ) {
     return this.productsService.getAll(title, minPrice, maxPrice);
   }
 
   // GET:  ~/api/products/:id
   @Get(':id')
-  @Throttle({default: {ttl: 10000, limit: 5}})
+  @Throttle({ default: { ttl: 10000, limit: 5 } })
   getSingleProducts(@Param('id', ParseIntPipe) id: number) {
     return this.productsService.getOneBy(id);
   }
@@ -67,7 +67,7 @@ export class ProductsControllers {
   @UseGuards(AuthRolesGuard)
   @Roles(UserType.ADMIN)
   UpdateProduct(@Param('id', ParseIntPipe) id: number, @Body() body: UpdateProductDto) {
-    return this.productsService.Update(id, body);
+    return this.productsService.update(id, body);
   }
 
   // Delete:  ~/api/products/:id
@@ -75,6 +75,6 @@ export class ProductsControllers {
   @UseGuards(AuthRolesGuard)
   @Roles(UserType.ADMIN)
   DeleteProduct(@Param('id', ParseIntPipe) id: number) {
-    return this.productsService.Delete(id);
+    return this.productsService.delete(id);
   }
 }
