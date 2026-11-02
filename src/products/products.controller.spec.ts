@@ -167,7 +167,7 @@ describe("ProductsController", () => {
   // Get all products tests
   describe("getAllProducts()", () => {
     it("should call getAll method in productsService", async () => {
-      const data = await productsControllers.getAllProducts(undefined, undefined, undefined,);
+      await productsControllers.getAllProducts(undefined, undefined, undefined,);
       expect(productsService.getAll).toHaveBeenCalledTimes(1);
     });
 

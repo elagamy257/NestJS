@@ -52,7 +52,7 @@ export class ReviewsService {
   getAll(pageNumber: number, reviewPerPage: number) {
     return this.reviewsRepository.find({
       skip: reviewPerPage * ( pageNumber -1),
-      take: 3,
+      take: reviewPerPage,
       order: { createdAt: "ASC" } });
 
   }
