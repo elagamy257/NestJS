@@ -1,8 +1,8 @@
 import { config } from 'dotenv';
 import { DataSource, type DataSourceOptions } from 'typeorm';
-import { Product } from '../products/product.entity.js';
-import { Review } from '../reviews/review.entity.js';
-import { User } from '../users/user.entity.js';
+import { Product } from '../products/product.entity';
+import { Review } from '../reviews/review.entity';
+import { User } from '../users/user.entity';
 
 config({ path: '.env' });
 

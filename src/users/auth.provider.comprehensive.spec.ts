@@ -5,10 +5,10 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 import bcrypt from 'bcryptjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { MailService } from '../mail/mail.service.js';
-import { UserType } from '../utils/enums.js';
-import { AuthProvider } from './auth.provider.js';
-import { User } from './user.entity.js';
+import { MailService } from '../mail/mail.service';
+import { UserType } from '../utils/enums';
+import { AuthProvider } from './auth.provider';
+import { User } from './user.entity';
 
 describe('AuthProvider authentication and password recovery', () => {
   let provider: AuthProvider;

@@ -7,7 +7,7 @@ import {
   OneToMany,
   ManyToOne,
 } from "typeorm";
-import { CURRENT_TIMESTAMP } from '../utils/constans.js';
+import { CURRENT_TIMESTAMP } from '../utils/constans';
 import { Review } from "../reviews/review.entity.js";
 import { User } from "../users/user.entity.js";
 

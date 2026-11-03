@@ -10,14 +10,14 @@ import {
   UseGuards,
   Query,
 } from '@nestjs/common';
-import { CreateProductDto } from './dtos/create-products.dto.js';
-import { UpdateProductDto } from './dtos/update-products.dto.js';
-import { ProductsService } from './products.service.js';
-import { AuthRolesGuard } from '../users/guards/auth.roles.guard.js';
-import { Roles } from '../users/decorators/user-role-decorator.js';
-import { UserType } from '../utils/enums.js';
-import { CurrentUser } from '../users/decorators/current-user-decorator.js';
-import * as type from '../utils/type.js';
+import { CreateProductDto } from './dtos/create-products.dto';
+import { UpdateProductDto } from './dtos/update-products.dto';
+import { ProductsService } from './products.service';
+import { AuthRolesGuard } from '../users/guards/auth.roles.guard';
+import { Roles } from '../users/decorators/user-role-decorator';
+import { UserType } from '../utils/enums';
+import { CurrentUser } from '../users/decorators/current-user-decorator';
+import * as type from '../utils/type';
 import { ApiOperation, ApiQuery, ApiResponse, ApiSecurity } from '@nestjs/swagger';
 import { SkipThrottle, Throttle } from '@nestjs/throttler'
 

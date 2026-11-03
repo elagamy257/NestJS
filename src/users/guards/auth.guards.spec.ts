@@ -1,9 +1,9 @@
 import { ExecutionContext, UnauthorizedException } from '@nestjs/common';
 import { describe, expect, it, vi } from 'vitest';
-import { UserType } from '../../utils/enums.js';
-import { CURRENT_USER_KEY } from '../../utils/constans.js';
-import { AuthGuard } from './auth.guard.js';
-import { AuthRolesGuard } from './auth.roles.guard.js';
+import { UserType } from '../../utils/enums';
+import { CURRENT_USER_KEY } from '../../utils/constans';
+import { AuthGuard } from './auth.guard';
+import { AuthRolesGuard } from './auth.roles.guard';
 
 const contextFor = (request: { headers: { authorization?: string }; user?: unknown }) =>
   ({

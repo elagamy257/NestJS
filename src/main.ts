@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module.js';
+import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet'
 async function bootstrap() {
@@ -30,4 +30,7 @@ async function bootstrap() {
   // running the app
   await app.listen(process.env.PORT ?? 5000);
 }
-await bootstrap();
+bootstrap().catch((err: unknown) => {
+  console.error(err);
+  process.exit(1);
+});

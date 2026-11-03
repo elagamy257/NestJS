@@ -3,10 +3,10 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Reflector } from '@nestjs/core';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { UserType } from '../utils/enums.js';
-import { UsersService } from '../users/users.service.js';
-import { ReviewsControllers } from './reviews.controller.js';
-import { ReviewsService } from './reviews.service.js';
+import { UserType } from '../utils/enums';
+import { UsersService } from '../users/users.service';
+import { ReviewsControllers } from './reviews.controller';
+import { ReviewsService } from './reviews.service';
 
 describe('ReviewsControllers', () => {
   let controller: ReviewsControllers;

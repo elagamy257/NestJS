@@ -1,6 +1,6 @@
 import { BadRequestException } from '@nestjs/common';
 import { describe, expect, it, vi } from 'vitest';
-import { UploadsController } from './uploads.controller.js';
+import { UploadsController } from './uploads.controller';
 
 describe('UploadsController', () => {
   const controller = new UploadsController();

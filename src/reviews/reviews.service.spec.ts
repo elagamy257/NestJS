@@ -2,13 +2,13 @@ import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { Product } from '../products/product.entity.js';
-import { ProductsService } from '../products/products.service.js';
-import { UserType } from '../utils/enums.js';
-import { User } from '../users/user.entity.js';
-import { UsersService } from '../users/users.service.js';
-import { Review } from './review.entity.js';
-import { ReviewsService } from './reviews.service.js';
+import { Product } from '../products/product.entity';
+import { ProductsService } from '../products/products.service';
+import { UserType } from '../utils/enums';
+import { User } from '../users/user.entity';
+import { UsersService } from '../users/users.service';
+import { Review } from './review.entity';
+import { ReviewsService } from './reviews.service';
 
 describe('ReviewsService', () => {
   let service: ReviewsService;

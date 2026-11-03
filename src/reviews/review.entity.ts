@@ -7,7 +7,7 @@ import {
   ManyToOne,
   type Relation,
 } from "typeorm";
-import { CURRENT_TIMESTAMP } from '../utils/constans.js';
+import { CURRENT_TIMESTAMP } from '../utils/constans';
 import { Product } from "../products/product.entity.js";
 import { User } from "../users/user.entity.js";
 
