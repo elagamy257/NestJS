@@ -19,7 +19,11 @@
     "test:watch": "cross-env NODE_ENV=development vitest",
     "test:cov": "cross-env NODE_ENV=development vitest run --coverage",
     "test:debug": "cross-env NODE_ENV=development vitest --inspect-brk --no-file-parallelism",
-    "test:e2e": "cross-env NODE_ENV=development vitest run --config ./vitest.config.e2e.ts"
+    "test:e2e": "cross-env NODE_ENV=test vitest run --config ./vitest.config.e2e.ts --maxWorkers=1",
+    "typeorm": "npm run build && npx typeorm -d dist/db/data-source.js",
+    "migration:generate": "npm run typeorm -- migration:generate",
+    "migration:run": "npm run typeorm -- migration:run",
+    "migration:revet": "npm run typeorm -- migration:revet"
   },
   "dependencies": {
     "@nestjs-modules/mailer": "^4.0.0",
@@ -35,6 +39,7 @@
     "bcryptjs": "^3.0.3",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.15.1",
+    "dotenv": "^18.0.9",
     "ejs": "^7.0.2",
     "helmet": "^8.3.0",
     "multer": "^2.5.0",

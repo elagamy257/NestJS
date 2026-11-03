@@ -12,33 +12,21 @@ import { UploadsModule } from './uploads/uploads.module.js';
 import { MailModule } from './mail/mail.module.js';
 import { LoggerMiddlrware } from './utils/middleware/logger.middleware.js';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler'
+import { AppController } from './app.controller.js';
+import { dataSourceOptions } from './db/data-source.js';
 @Module({
+  controllers: [AppController],
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: process.env.NODE_ENV !== 'production'? `.env.${process.env.NODE_ENV || 'development'}`: ".env"
+    }),
     ProductsModules,
     ReviewsModules,
     UsersModules,
     UploadsModule,
     MailModule,
-    TypeOrmModule.forRootAsync({
-      inject: [ConfigService],
-      useFactory: (config: ConfigService) => {
-        return {
-          type: 'postgres',
-          database: config.get<string>("DB_DATABASE"),
-          username: config.get<string>("DB_USERNAME"),
-          password: config.get<string>("DB_PASSWORD")?.toString() ?? '',
-          port: config.get<number>("DB_PORT"),
-          host: 'localhost',
-          synchronize: process.env.NODE_ENV !== 'production',
-          entities: [Product, User, Review]
-        }
-      }
-
-    }),
-    ConfigModule.forRoot({
-      isGlobal: true,
-      envFilePath: `.env.${process.env.NODE_ENV || 'development'}`
-    }),
+    TypeOrmModule.forRoot(dataSourceOptions),
     ThrottlerModule.forRoot([
       {
         ttl: 10000, //10 sec
@@ -82,3 +70,22 @@ export class AppModule implements NestModule {
   }
 
 }
+
+// local db
+
+// {
+//       inject: [ConfigService],
+//       useFactory: (config: ConfigService) => {
+//         return {
+//           type: 'postgres',
+//           database: config.get<string>("DB_DATABASE"),
+//           username: config.get<string>("DB_USERNAME"),
+//           password: config.get<string>("DB_PASSWORD")?.toString() ?? '',
+//           port: config.get<number>("DB_PORT"),
+//           host: 'localhost',
+//           synchronize: process.env.NODE_ENV !== 'production',
+//           entities: [Product, User, Review]
+//         }
+//       }
+
+//     }
