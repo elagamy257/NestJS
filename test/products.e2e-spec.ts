@@ -1,111 +1,163 @@
-import { INestApplication } from "@nestjs/common";
-import { DataSource } from "typeorm";
-import { CreateProductDto } from "../src/products/dtos/create-products.dto.js";
-import { Test, TestingModule } from "@nestjs/testing";
-import { AppModule } from "../src/app.module.js";
-import { Product } from "../src/products/product.entity.js";
-import request from "supertest";
-import { User } from "../src/users/user.entity.js";
-import { UserType } from "../src/utils/enums.js";
-import bcrypt from "bcryptjs";
-
+import type { INestApplication } from '@nestjs/common';
+import type { DataSource } from 'typeorm';
+import request from 'supertest';
+import { Product } from '../src/products/product.entity.js';
+import { User } from '../src/users/user.entity.js';
+import { UserType } from '../src/utils/enums.js';
+import {
+  clearDatabase,
+  createAccessToken,
+  createE2eContext,
+  createUser,
+} from './e2e-test-utils.js';
 
 describe('ProductsController (e2e)', () => {
   let app: INestApplication;
-  let dataSourece: DataSource;
-  let productsToSave: CreateProductDto[];
-  let accessToken: string;
-  let dto: CreateProductDto;
+  let dataSource: DataSource;
+  let admin: User;
+  let normalUser: User;
+  let adminToken: string;
+  let normalUserToken: string;
+
+  const productDto = {
+    title: 'Book',
+    description: 'A useful book',
+    price: 10,
+  };
 
   beforeEach(async () => {
-    dto = { title: 'book', description: "about book 1", price: 10 };
-    productsToSave = [
-      { title: 'book', description: "about book 1", price: 10 },
-      { title: 'laptop', description: "laptop ", price: 100 },
-      { title: 'CARPET', description: "about book 1", price: 70 },
-      { title: 'char', description: "about book 1", price: 20 },
-    ]
+    ({ app, dataSource } = await createE2eContext());
+    await clearDatabase(dataSource);
 
-    const module: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
-
-    app = module.createNestApplication();
-    await app.init();
-    dataSourece = app.get(DataSource);
-
-    // saving a new user (admin) to the db
-    const salt = await bcrypt.genSalt(10);
-    const hash = await bcrypt.hash('123456', salt);
-    await dataSourece.createQueryBuilder().insert().into(User).values([
-      { username: 'admin', email: 'admin@gmail.com', userType: UserType.ADMIN, password: hash, isAccountVerified: true }
-    ]).execute();
-
-    // login to admin account and get the token
-    const { body } = await request(app.getHttpServer())
-      .post('/api/users/auth/login')
-      .send({ email: 'admin@gmail.com', password: '123456' })
-    accessToken = body.accessToken;
-  })
+    admin = await createUser(dataSource, {
+      email: 'admin@example.com',
+      username: 'admin',
+      userType: UserType.ADMIN,
+    });
+    normalUser = await createUser(dataSource, {
+      email: 'user@example.com',
+      username: 'user',
+    });
+    adminToken = await createAccessToken(app, admin);
+    normalUserToken = await createAccessToken(app, normalUser);
+  });
 
   afterEach(async () => {
-    await dataSourece.createQueryBuilder().delete().from(Product).execute();
-    await dataSourece.createQueryBuilder().delete().from(User).execute();
+    await clearDatabase(dataSource);
     await app.close();
-  })
+  });
 
-  //GET: ~/api/products
-  describe('GET', () => {
-    beforeEach(async()=>{
-      await dataSourece.createQueryBuilder().insert().into(Product).values(productsToSave).execute();
-    })
+  async function saveProduct(title: string, price: number): Promise<Product> {
+    return dataSource.getRepository(Product).save({
+      title,
+      description: `${title} description`,
+      price,
+      user: admin,
+    });
+  }
 
-    it("should return all products from the db", async () => {
-      const response = await request(app.getHttpServer()).get("/api/products")
-      expect(response.status).toBe(200);
-      expect(response.body).toHaveLength(4);
-    })
-    it("should return all products based on title", async () => {
-      const response = await request(app.getHttpServer()).get("/api/products?title=book")
-      expect(response.status).toBe(200);
-      expect(response.body).toHaveLength(1);
-    })
-    it("should return all products based minPrice & maxPrice ", async () => {
-      const response = await request(app.getHttpServer()).get("/api/products?minPrice=20&maxPrice=100")
-      expect(response.status).toBe(200);
-      expect(response.body).toHaveLength(3);
-    })
-  })
+  describe('GET /api/products', () => {
+    it('returns every product and supports title and price filters', async () => {
+      await saveProduct('book', 10);
+      await saveProduct('laptop', 100);
+      await saveProduct('carpet', 70);
+      await saveProduct('chair', 20);
 
-  //POST: ~/api/products
-  describe('POST', () => {
-    it("should create a new product and save it to the db", async () => {
+      const all = await request(app.getHttpServer()).get('/api/products');
+      const byTitle = await request(app.getHttpServer()).get('/api/products?title=book');
+      const byPrice = await request(app.getHttpServer()).get(
+        '/api/products?minPrice=20&maxPrice=100',
+      );
+
+      expect(all.status).toBe(200);
+      expect(all.body).toHaveLength(4);
+      expect(byTitle.body).toHaveLength(1);
+      expect(byTitle.body[0]).toMatchObject({ title: 'book' });
+      expect(byPrice.body).toHaveLength(3);
+    });
+  });
+
+  describe('GET /api/products/:id', () => {
+    it('returns a product by id', async () => {
+      const product = await saveProduct('book', 10);
+
+      const response = await request(app.getHttpServer()).get(`/api/products/${product.id}`);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toMatchObject({ id: product.id, title: 'book', price: 10 });
+    });
+
+    it('returns 404 for a product that does not exist', async () => {
+      const response = await request(app.getHttpServer()).get('/api/products/999999');
+
+      expect(response.status).toBe(404);
+    });
+  });
+
+  describe('POST /api/products', () => {
+    it('creates a product for an authenticated admin', async () => {
       const response = await request(app.getHttpServer())
         .post('/api/products')
-        .set('Authorization', `Bearer ${accessToken}`)
-        .send(dto)
+        .set('Authorization', `Bearer ${adminToken}`)
+        .send(productDto);
 
       expect(response.status).toBe(201);
+      expect(response.body).toMatchObject({ ...productDto, title: 'book' });
       expect(response.body.id).toBeDefined();
-      expect(response.body).toMatchObject(dto);
-    })
+    });
 
-    it("should return 400 status code if title was less than 2 char", async () => {
-      dto.title='b';
+    it('rejects an invalid payload', async () => {
       const response = await request(app.getHttpServer())
         .post('/api/products')
-        .set('Authorization', `Bearer ${accessToken}`)
-        .send(dto)
+        .set('Authorization', `Bearer ${adminToken}`)
+        .send({ ...productDto, title: 'no' });
 
       expect(response.status).toBe(400);
     });
 
-    it("should return 401 status code if bearer wan not provided", async () => {
-      const response = await request(app.getHttpServer())
+    it('rejects missing and non-admin credentials', async () => {
+      const missingToken = await request(app.getHttpServer())
         .post('/api/products')
-        .send(dto)
+        .send(productDto);
+      const normalUser = await request(app.getHttpServer())
+        .post('/api/products')
+        .set('Authorization', `Bearer ${normalUserToken}`)
+        .send(productDto);
 
-      expect(response.status).toBe(401);
+      expect(missingToken.status).toBe(401);
+      expect(normalUser.status).toBe(403);
     });
-  })
-})
+  });
+
+  describe('PUT /api/products/:id', () => {
+    it('updates an existing product for an authenticated admin', async () => {
+      const product = await saveProduct('book', 10);
+
+      const response = await request(app.getHttpServer())
+        .put(`/api/products/${product.id}`)
+        .set('Authorization', `Bearer ${adminToken}`)
+        .send({ title: 'notebook', price: 15 });
+
+      expect(response.status).toBe(200);
+      expect(response.body).toMatchObject({
+        id: product.id,
+        title: 'notebook',
+        price: 15,
+      });
+    });
+  });
+
+  describe('DELETE /api/products/:id', () => {
+    it('deletes an existing product for an authenticated admin', async () => {
+      const product = await saveProduct('book', 10);
+
+      const response = await request(app.getHttpServer())
+        .delete(`/api/products/${product.id}`)
+        .set('Authorization', `Bearer ${adminToken}`);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual({ message: 'product deleted' });
+      await expect(dataSource.getRepository(Product).findOneBy({ id: product.id })).resolves.toBeNull();
+    });
+  });
+});
