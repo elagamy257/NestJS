@@ -8,8 +8,6 @@ import { UserType } from "../utils/enums.js";
 import { AuthProvider } from "./auth.provider.js";
 import { RegisterDto } from "./dtos/register.dto.js";
 import { LoginDto } from "./dtos/login.dto.js";
-import { join } from "path";
-import { existsSync, unlinkSync } from "fs";
 import { ResetPassDto } from "./dtos/reset-password.dto.js";
 
 @Injectable()
@@ -99,18 +97,13 @@ export class UsersService {
   /**
    * set Profile Image
    * @param userId id for logged user
-   * @param newImageProfile profile image
+   * @param newImageProfile profile image identifier
    * @returns user from db
    */
   async setProfileImage(userId: number, newImageProfile: string) {
     const user = await this.getCurrentUser(userId);
-    if (!user.profileImage) {
-      user.profileImage = newImageProfile;
-    } else {
-      await this.removeProfileImage(userId);
-      user.profileImage = newImageProfile;
-    }
-
+    // Simply update the profile image reference (cloud URL or filename)
+    user.profileImage = newImageProfile;
     return this.usersRepository.save(user);
   }
 
@@ -124,11 +117,8 @@ export class UsersService {
     if (!user.profileImage)
       throw new BadRequestException("there is no profile image");
 
-    const imagePath = join(process.cwd(), `./images/users/${user.profileImage}`);
-    if (existsSync(imagePath)) {
-      unlinkSync(imagePath);
-    }
-
+    // Clear the reference — actual file deletion must be handled
+    // by the cloud storage provider (S3, Cloudinary, etc.)
     user.profileImage = null as any;
     return this.usersRepository.save(user);
   }

@@ -6,10 +6,10 @@ import {
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { UserType } from '../utils/enums';
-import { AuthProvider } from './auth.provider';
-import { User } from './user.entity';
-import { UsersService } from './users.service';
+import { UserType } from '../utils/enums.js';
+import { AuthProvider } from './auth.provider.js';
+import { User } from './user.entity.js';
+import { UsersService } from './users.service.js';
 
 describe('UsersService', () => {
   let service: UsersService;

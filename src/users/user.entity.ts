@@ -7,10 +7,10 @@ import {
   OneToMany,
   type Relation,
 } from 'typeorm';
-import { CURRENT_TIMESTAMP } from '../utils/constans';
-import { Product } from '../products/product.entity';
-import { Review } from '../reviews/review.entity';
-import { UserType } from '../utils/enums';
+import { CURRENT_TIMESTAMP } from '../utils/constans.js';
+import { Product } from '../products/product.entity.js';
+import { Review } from '../reviews/review.entity.js';
+import { UserType } from '../utils/enums.js';
 import { Exclude } from 'class-transformer';
 
 @Entity({ name: 'users' })

@@ -29,20 +29,20 @@ export class UsersControllers {
   }
 
   // POST:  ~/api/users/auth/login
-  @Post("auth/login")//201
-  @HttpCode(HttpStatus.OK) //200
+  @Post("auth/login")
+  @HttpCode(HttpStatus.OK)
   login(@Body() body: LoginDto) {
     return this.usersService.login(body);
   }
 
-  // Get:  ~/api/users/auth/current-user
+  // GET:  ~/api/users/current-user
   @Get("current-user")
   @UseGuards(AuthGuard)
   getCurrentUser(@CurrentUser() payload: type.JWTPayloadType) {
     return this.usersService.getCurrentUser(payload.id);
   }
 
-  // Get:  ~/api/users
+  // GET:  ~/api/users
   @Get()
   @UseGuards(AuthRolesGuard)
   @Roles(UserType.ADMIN)
@@ -50,7 +50,7 @@ export class UsersControllers {
     return this.usersService.getAll();
   }
 
-  // Put:  ~/api/users
+  // PUT:  ~/api/users
   @Put()
   @UseGuards(AuthRolesGuard)
   @Roles(UserType.ADMIN, UserType.NORMaL_USER)
@@ -58,7 +58,7 @@ export class UsersControllers {
     return this.usersService.update(payload.id, body);
   }
 
-  // Delete:  ~/api/users/:id
+  // DELETE:  ~/api/users/:id
   @Delete(":id")
   @UseGuards(AuthRolesGuard)
   @Roles(UserType.ADMIN, UserType.NORMaL_USER)
@@ -67,19 +67,22 @@ export class UsersControllers {
   }
 
   // POST:  ~/api/users/upload-image
+  // NOTE: In serverless environments (Vercel) the file is in memory (buffer).
+  // For persistent profile images integrate a cloud storage provider (S3/Cloudinary).
   @Post("upload-image")
   @UseGuards(AuthGuard)
   @UseInterceptors(FileInterceptor('user-image'))
   @ApiSecurity('bearer')
   @ApiConsumes("multipart/form-data")
-  @ApiBody({ type: ImageUploadDto, description: 'profile image'})
+  @ApiBody({ type: ImageUploadDto, description: 'profile image' })
   uploadProfileImage(
     @UploadedFile() file: Express.Multer.File,
     @CurrentUser() payload: type.JWTPayloadType
   ) {
     if (!file) throw new BadRequestException("No file provided");
-    return this.usersService.setProfileImage(payload.id, file.filename);
-
+    // In serverless (memoryStorage) file.filename is undefined — use originalname as identifier
+    const imageIdentifier = file.filename ?? file.originalname;
+    return this.usersService.setProfileImage(payload.id, imageIdentifier);
   }
 
   // DELETE:  ~/api/users/images/remove-profile-image
@@ -89,15 +92,18 @@ export class UsersControllers {
     return this.usersService.removeProfileImage(payload.id);
   }
 
-  // GET:  ~/api/users/images/remove-profile-image
+  // GET:  ~/api/users/images/:image
+  // NOTE: Serving files from disk is not supported in serverless (Vercel).
   @Get("images/:image")
   @UseGuards(AuthGuard)
-  showProfileImage(@Param('image') image: string, @Res() res: express.Response) {
-    return res.sendFile(image, { root: 'images/users' });
+  showProfileImage(@Param('image') _image: string, @Res() res: express.Response) {
+    return res.status(501).json({
+      message:
+        "File serving from disk is not supported in serverless deployments. Use a cloud storage provider.",
+    });
   }
 
   // GET:  ~/api/users/verify-email/:id/:verificationToken
-
   @Get("verify-email/:id/:verificationToken")
   verifyEmail(
     @Param('id', ParseIntPipe) id: number,

@@ -1,36 +1,56 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
+import { AppModule } from './app.module.js';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import helmet from 'helmet'
-async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+import helmet from 'helmet';
+import type { INestApplication } from '@nestjs/common';
+
+let app: INestApplication;
+
+async function bootstrap(): Promise<INestApplication> {
+  if (app) return app;
+
+  app = await NestFactory.create(AppModule);
 
   // Apply Middleware
-  app.use(helmet())
+  app.use(helmet());
 
-  // Cors policy
+  // Cors policy — allow CLIENT_DOMAIN in prod, or all origins as fallback
+  const allowedOrigin = process.env.CLIENT_DOMAIN ?? '*';
   app.enableCors({
-    origin: "http://localhost:3000"
-  })
+    origin: allowedOrigin === '*' ? true : allowedOrigin,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    credentials: true,
+  });
 
-  //Swagger
+  // Swagger
   const swagger = new DocumentBuilder()
-    .setTitle("Nest JS - App Api")
-    .setDescription("Your Api description")
-    .addServer("http://localhost:5000")
-    .setTermsOfService("http://localhost:5000/terms")
-    .setVersion("1.0")
+    .setTitle('Nest JS - App Api')
+    .setDescription('Your Api description')
+    .setVersion('1.0')
     .addSecurity('bearer', { type: 'http', scheme: 'bearer' })
     .addBearerAuth()
     .build();
   const documentation = SwaggerModule.createDocument(app, swagger);
-  // http://localhost:5000/swagger
-  SwaggerModule.setup("swagger", app, documentation);
+  SwaggerModule.setup('swagger', app, documentation);
 
-  // running the app
-  await app.listen(process.env.PORT ?? 5000);
+  await app.init();
+  return app;
 }
-bootstrap().catch((err: unknown) => {
-  console.error(err);
-  process.exit(1);
-});
+
+// Vercel serverless handler — entry point for Vercel
+export default async function handler(req: any, res: any) {
+  const application = await bootstrap();
+  const httpAdapter = application.getHttpAdapter();
+  const instance = httpAdapter.getInstance() as (req: any, res: any) => void;
+  instance(req, res);
+}
+
+// Local / traditional server startup (skipped on Vercel)
+if (process.env.VERCEL !== '1') {
+  bootstrap()
+    .then((application) => application.listen(process.env.PORT ?? 5000))
+    .catch((err: unknown) => {
+      console.error(err);
+      process.exit(1);
+    });
+}

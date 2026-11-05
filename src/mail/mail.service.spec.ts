@@ -1,6 +1,6 @@
 import { RequestTimeoutException } from '@nestjs/common';
 import { describe, expect, it, vi } from 'vitest';
-import { MailService } from './mail.service';
+import { MailService } from './mail.service.js';
 
 describe('MailService', () => {
   it('sends the expected login, verification, and password-reset templates', async () => {

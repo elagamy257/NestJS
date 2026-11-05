@@ -7,7 +7,7 @@ import { JwtModule } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
 import { AuthProvider } from "./auth.provider.js";
 import { MulterModule } from "@nestjs/platform-express";
-import { diskStorage } from "multer";
+import { memoryStorage } from "multer";
 import { MailModule } from "../mail/mail.module.js";
 
 @Module({
@@ -23,19 +23,14 @@ import { MailModule } from "../mail/mail.module.js";
         return {
           global: true,
           secret: config.get<string>("JWT_SECRET"),
-          signOptions: { expiresIn: (config.get<string>("JWT_EXPIRES_IN") ?? '1d') as any, },
+          signOptions: { expiresIn: (config.get<string>("JWT_EXPIRES_IN") ?? '1d') as any },
         };
       },
     }),
+    // Use memoryStorage so the app works in serverless (Vercel).
+    // For persistent profile images, integrate a cloud storage provider (S3/Cloudinary).
     MulterModule.register({
-      storage: diskStorage({
-        destination: './images/users',
-        filename: (_req, file, cb) => {
-          const prefix = `${Date.now()}-${Math.round(Math.random() * 1000000)}`;
-          const filename = `${prefix}-${file.originalname}`;
-          cb(null, filename);
-        }
-      }),
+      storage: memoryStorage(),
       fileFilter: (_req, file, cb) => {
         if (file.mimetype.startsWith('image')) {
           cb(null, true);
@@ -43,8 +38,8 @@ import { MailModule } from "../mail/mail.module.js";
           cb(new BadRequestException('Unsupported file format'), false);
         }
       },
-      limits: { fileSize: 1024 * 1024 * 2 } // 2 MB
-    })
+      limits: { fileSize: 1024 * 1024 * 2 }, // 2 MB
+    }),
   ],
 })
-export class UsersModules { }
+export class UsersModules {}

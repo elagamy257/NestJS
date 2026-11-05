@@ -1,16 +1,16 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { RegisterDto } from './dtos/register.dto';
-import { LoginDto } from './dtos/login.dto';
-import { JWTPayloadType } from '../utils/type';
+import { RegisterDto } from './dtos/register.dto.js';
+import { LoginDto } from './dtos/login.dto.js';
+import { JWTPayloadType } from '../utils/type.js';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from './user.entity';
+import { User } from './user.entity.js';
 import { JwtService } from '@nestjs/jwt';
 import bcrypt from 'bcryptjs';
-import { MailService } from '../mail/mail.service';
+import { MailService } from '../mail/mail.service.js';
 import { randomBytes } from 'crypto';
 import { ConfigService } from '@nestjs/config';
-import { ResetPassDto } from './dtos/reset-password.dto';
+import { ResetPassDto } from './dtos/reset-password.dto.js';
 
 @Injectable()
 export class AuthProvider {

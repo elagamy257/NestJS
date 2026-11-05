@@ -4,9 +4,9 @@ import { JwtService } from '@nestjs/jwt';
 import { Reflector } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { UserType } from '../utils/enums';
-import { UsersControllers } from './users.controller';
-import { UsersService } from './users.service';
+import { UserType } from '../utils/enums.js';
+import { UsersControllers } from './users.controller.js';
+import { UsersService } from './users.service.js';
 
 describe('UsersControllers', () => {
   let controller: UsersControllers;

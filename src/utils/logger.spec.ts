@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { firstValueFrom, of } from 'rxjs';
-import { LoggerInterceptor } from './interceptors/logger.interceptor';
-import { LoggerMiddlrware } from './middleware/logger.middleware';
+import { LoggerInterceptor } from './interceptors/logger.interceptor.js';
+import { LoggerMiddlrware } from './middleware/logger.middleware.js';
 
 describe('LoggerInterceptor', () => {
   it('removes a top-level password from object responses and preserves scalar responses', async () => {

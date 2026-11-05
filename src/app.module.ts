@@ -1,19 +1,19 @@
 import { ClassSerializerInterceptor, MiddlewareConsumer, Module, NestModule, RequestMethod, ValidationPipe } from '@nestjs/common';
-import { ProductsModules } from './products/products.module';
-import { ReviewsModules } from './reviews/reviews.module';
-import { UsersModules } from './users/users.module';
+import { ProductsModules } from './products/products.module.js';
+import { ReviewsModules } from './reviews/reviews.module.js';
+import { UsersModules } from './users/users.module.js';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Product } from './products/product.entity';
+import { Product } from './products/product.entity.js';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { User } from './users/user.entity';
-import { Review } from './reviews/review.entity';
+import { User } from './users/user.entity.js';
+import { Review } from './reviews/review.entity.js';
 import { APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
-import { UploadsModule } from './uploads/uploads.module';
-import { MailModule } from './mail/mail.module';
-import { LoggerMiddlrware } from './utils/middleware/logger.middleware';
+import { UploadsModule } from './uploads/uploads.module.js';
+import { MailModule } from './mail/mail.module.js';
+import { LoggerMiddlrware } from './utils/middleware/logger.middleware.js';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler'
-import { AppController } from './app.controller';
-import { dataSourceOptions } from './db/data-source';
+import { AppController } from './app.controller.js';
+import { dataSourceOptions } from './db/data-source.js';
 @Module({
   controllers: [AppController],
   imports: [

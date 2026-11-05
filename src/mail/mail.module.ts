@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { EjsAdapter } from '@nestjs-modules/mailer/adapters/ejs.adapter';
 import { join } from 'path';
-import { MailService } from './mail.service';
+import { MailService } from './mail.service.js';
 
 @Module({
   imports: [
@@ -23,7 +23,8 @@ import { MailService } from './mail.service';
           from: '"No Reply" <no-reply@my-nestjs-app.com>',
         },
         template: {
-          dir: join(process.cwd(), 'src/mail/templates'),
+          // Use __dirname so the path is always relative to the compiled file
+          dir: join(__dirname, 'templates'),
           adapter: new EjsAdapter({ inlineCssEnabled: true }),
           options: { strict: false },
         },
