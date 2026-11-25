@@ -1,8 +1,12 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module.js';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import helmet from 'helmet';
+import helmetImport from 'helmet';
 import type { INestApplication } from '@nestjs/common';
+
+// helmet is a CJS module: some toolchains (e.g. Vercel's builder without
+// esModuleInterop) expose it as a namespace instead of a callable default.
+const helmet: any = (helmetImport as any).default ?? helmetImport;
 
 let app: INestApplication;
 
