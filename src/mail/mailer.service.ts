@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { readFile } from 'fs/promises';
-import { dirname, join } from 'path';
-import { fileURLToPath } from 'url';
+import { mailTemplates } from './templates.js';
 // @ts-ignore no bundled types
 import * as nodemailerNs from 'nodemailer';
 // @ts-ignore no bundled types
@@ -10,7 +8,6 @@ import * as ejsNs from 'ejs';
 
 const nodemailer: any = (nodemailerNs as any).default ?? nodemailerNs;
 const ejs: any = (ejsNs as any).default ?? ejsNs;
-const templatesDir = join(dirname(fileURLToPath(import.meta.url)), 'templates');
 
 export interface SendMailOptions {
   to: string;
@@ -42,7 +39,8 @@ export class MailerService {
   }
 
   async sendMail(options: SendMailOptions) {
-    const file = await readFile(join(templatesDir, `${options.template}.ejs`), 'utf8');
+    const file = mailTemplates[options.template];
+    if (!file) throw new Error(`Unknown mail template: ${options.template}`);
     const html = ejs.render(file, options.context ?? {}, { strict: false });
     return this.getTransporter().sendMail({
       from: options.from ?? '"No Reply" <no-reply@my-nestjs-app.com>',
