@@ -1,17 +1,8 @@
 {
-  "version": 2,
-  "buildCommand": "npm run vercel-build",
-  "outputDirectory": "dist",
-  "builds": [
-    {
-      "src": "dist/main.js",
-      "use": "@vercel/node"
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "functions": {
+    "src/main.ts": {
+      "includeFiles": "src/mail/templates/**"
     }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "dist/main.js"
-    }
-  ]
+  }
 }
