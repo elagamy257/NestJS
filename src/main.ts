@@ -35,7 +35,13 @@ async function bootstrap(): Promise<INestApplication> {
     .addBearerAuth()
     .build();
   const documentation = SwaggerModule.createDocument(app, swagger);
-  SwaggerModule.setup('swagger', app, documentation);
+  SwaggerModule.setup('swagger', app, documentation, {
+    customCssUrl: 'https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.17.14/swagger-ui.css',
+    customJs: [
+      'https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.17.14/swagger-ui-bundle.js',
+      'https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.17.14/swagger-ui-standalone-preset.js',
+    ],
+  });
 
   await app.init();
   return app;
