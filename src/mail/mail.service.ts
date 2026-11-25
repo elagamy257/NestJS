@@ -1,5 +1,5 @@
 import { Injectable, RequestTimeoutException } from '@nestjs/common';
-import { MailerService } from '@nestjs-modules/mailer';
+import { MailerService } from './mailer.service.js';
 
 @Injectable()
 export class MailService {
