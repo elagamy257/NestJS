@@ -3,8 +3,6 @@ import { AppModule } from './app.module.js';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmetImport from 'helmet';
 import type { INestApplication } from '@nestjs/common';
-import { createRequire } from 'module';
-import { readFileSync } from 'fs';
 
 // helmet is a CJS module: some toolchains (e.g. Vercel's builder without
 // esModuleInterop) expose it as a namespace instead of a callable default.
@@ -37,25 +35,10 @@ async function bootstrap(): Promise<INestApplication> {
     .addBearerAuth()
     .build();
   const documentation = SwaggerModule.createDocument(app, swagger);
-  // Serve Swagger UI assets from this deployment (no external CDN).
-  // Each require.resolve uses a literal path so Vercel includes the files in the function.
-  const nodeRequire = createRequire(import.meta.url);
-  const swaggerAssets: Record<string, { file: string; type: string }> = {
-    'swagger-ui.css': { file: nodeRequire.resolve('swagger-ui-dist/swagger-ui.css'), type: 'text/css' },
-    'swagger-ui-bundle.js': { file: nodeRequire.resolve('swagger-ui-dist/swagger-ui-bundle.js'), type: 'application/javascript' },
-    'swagger-ui-standalone-preset.js': { file: nodeRequire.resolve('swagger-ui-dist/swagger-ui-standalone-preset.js'), type: 'application/javascript' },
-  };
-  const adapter = app.getHttpAdapter();
-  for (const [name, asset] of Object.entries(swaggerAssets)) {
-    adapter.get(`/swagger-assets/${name}`, (_req: any, res: any) => {
-      res.setHeader('Content-Type', asset.type);
-      res.setHeader('Cache-Control', 'public, max-age=86400');
-      res.end(readFileSync(asset.file));
-    });
-  }
+  const cdn = 'https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.17.14';
   SwaggerModule.setup('swagger', app, documentation, {
-    customCssUrl: '/swagger-assets/swagger-ui.css',
-    customJs: ['/swagger-assets/swagger-ui-bundle.js', '/swagger-assets/swagger-ui-standalone-preset.js'],
+    customCssUrl: `${cdn}/swagger-ui.css`,
+    customJs: [`${cdn}/swagger-ui-bundle.js`, `${cdn}/swagger-ui-standalone-preset.js`],
   });
 
   await app.init();
